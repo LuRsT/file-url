@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use CGI qw{unescape};
+use Cwd qw{abs_path};
+
+if ($#ARGV != 0 || !(-e $ARGV[0])) {
+    print "Usage:\n";
+    print "\tfile-url [path]\n";
+    print "\nExample\n";
+    print "\t\$ file-url\n";
+    print "\tfile:///home/lurst/dev/file-url/file-url\n";
+    exit;
+}
+
+my $filename = $ARGV[0];
+
+my $absolute_path = abs_path($filename);
+
+# Prefix with '/' for windows
+if ($absolute_path =~ '^/') {
+    $absolute_path = '/' . $absolute_path;
+}
+
+my $file_uri = 'file://' . $absolute_path;
+my $url_for_file = CGI::unescape($file_uri);
+
+print "$url_for_file\n";
